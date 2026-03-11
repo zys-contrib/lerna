@@ -13,10 +13,78 @@ function isFunction(config: any) {
   );
 }
 
-function resolveConfigPromise(presetPackageName: string, presetConfig: object) {
+/**
+ * Normalize the new conventional-changelog preset API (v8+) to the legacy
+ * format expected by conventional-changelog-core@5 and conventional-recommended-bump@7.
+ *
+ * New API shape:   { parser, writer, commits, whatBump }
+ * Legacy API shape: { parserOpts, writerOpts, gitRawCommitsOpts, conventionalChangelog, recommendedBumpOpts }
+ */
+function normalizeNewPresetConfig(config: any): any {
+  if (
+    config &&
+    (config.parser || config.writer) &&
+    !config.parserOpts &&
+    !config.writerOpts &&
+    !config.conventionalChangelog
+  ) {
+    log.verbose("getChangelogConfig", "Normalizing new preset API to legacy format");
+
+    const normalized: any = { ...config };
+
+    if (config.parser) {
+      normalized.parserOpts = config.parser;
+    }
+    if (config.writer) {
+      normalized.writerOpts = config.writer;
+    }
+    if (config.commits) {
+      normalized.gitRawCommitsOpts = config.commits;
+    }
+
+    normalized.conventionalChangelog = {
+      parserOpts: normalized.parserOpts,
+      writerOpts: normalized.writerOpts,
+    };
+    if (normalized.gitRawCommitsOpts) {
+      normalized.conventionalChangelog.gitRawCommitsOpts = normalized.gitRawCommitsOpts;
+    }
+
+    if (config.whatBump) {
+      normalized.recommendedBumpOpts = {
+        parserOpts: normalized.parserOpts,
+        whatBump: config.whatBump,
+      };
+    }
+
+    return normalized;
+  }
+  return config;
+}
+
+async function resolveConfigPromise(presetPackageName: string, presetConfig: object) {
   log.verbose("getChangelogConfig", "Attempting to resolve preset %j", presetPackageName);
 
-  let config = require(presetPackageName);
+  let config: any;
+
+  try {
+    config = require(presetPackageName);
+  } catch (requireError: any) {
+    if (requireError.code === "ERR_REQUIRE_ESM") {
+      log.verbose("getChangelogConfig", "Preset is ESM, using dynamic import for %j", presetPackageName);
+      const imported = await import(presetPackageName);
+      config = imported.default || imported;
+    } else {
+      throw requireError;
+    }
+  }
+
+  // Node.js 22+ can require() ESM modules, returning a module namespace object
+  // with { __esModule, default, ... } instead of the default export directly.
+  // Also handles interop wrappers from bundlers (e.g. esbuild, webpack).
+  if (config && config.__esModule && config.default) {
+    config = config.default;
+  }
 
   log.info("getChangelogConfig", "Successfully resolved preset %j", presetPackageName);
 
@@ -30,10 +98,12 @@ function resolveConfigPromise(presetPackageName: string, presetConfig: object) {
     }
   }
 
-  return config;
+  config = await Promise.resolve(config);
+
+  return normalizeNewPresetConfig(config);
 }
 
-export function getChangelogConfig(
+export async function getChangelogConfig(
   changelogPreset: ChangelogPresetConfig = "conventional-changelog-angular",
   rootPath: string
 ) {
@@ -51,7 +121,6 @@ export function getChangelogConfig(
     const parsed = npa(presetPackageName, rootPath);
 
     log.verbose("getChangelogConfig", "using preset %j", presetPackageName);
-    // catch allows missing file to pass without breaking chain
     // TODO: refactor to address type issues
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -69,7 +138,6 @@ export function getChangelogConfig(
         // @ts-ignore
         presetPackageName = parsed.fetchSpec;
       }
-      // catch allows missing file to pass without breaking chain
       // TODO: refactor to address type issues
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -80,17 +148,12 @@ export function getChangelogConfig(
 
     // Maybe it doesn't need an implicit 'conventional-changelog-' prefix?
     try {
-      config = resolveConfigPromise(presetPackageName, presetConfig);
+      config = await resolveConfigPromise(presetPackageName, presetConfig);
 
       cfgCache.set(cacheKey, config);
 
-      // early exit, yay
-      return Promise.resolve(config);
-    } catch (err) {
-      // catch allows missing file to pass without breaking chain
-      // TODO: refactor to address type issues
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      return config;
+    } catch (err: any) {
       log.verbose("getChangelogConfig", err.message);
       log.info("getChangelogConfig", "Auto-prefixing conventional-changelog preset %j", presetName);
 
@@ -112,14 +175,10 @@ export function getChangelogConfig(
     }
 
     try {
-      config = resolveConfigPromise(presetPackageName, presetConfig);
+      config = await resolveConfigPromise(presetPackageName, presetConfig);
 
       cfgCache.set(cacheKey, config);
-    } catch (err) {
-      // catch allows missing file to pass without breaking chain
-      // TODO: refactor to address type issues
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+    } catch (err: any) {
       log.warn("getChangelogConfig", err.message);
 
       throw new ValidationError(
@@ -131,6 +190,5 @@ export function getChangelogConfig(
     }
   }
 
-  // the core presets are bloody Q.all() spreads
-  return Promise.resolve(config);
+  return config;
 }

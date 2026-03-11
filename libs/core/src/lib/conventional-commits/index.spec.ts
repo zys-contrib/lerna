@@ -281,6 +281,21 @@ describe("conventional-commits", () => {
       expect(bump).toBe("1.1.0");
     });
 
+    it("supports new v8+ preset API with parser/writer/whatBump", async () => {
+      const cwd = await initFixture("fixed");
+      const [pkg1] = await getPackages(cwd);
+
+      // make a change in package-1
+      await pkg1.set("changed", 1).serialize();
+      await gitAdd(cwd, pkg1.manifestLocation);
+      await gitCommit(cwd, "feat: changed 1");
+
+      const bump = await recommendVersion(pkg1, "fixed", {
+        changelogPreset: "./scripts/new-api-preset.js",
+      });
+      expect(bump).toBe("1.1.0");
+    });
+
     it("supports custom tagPrefix in fixed mode", async () => {
       const cwd = await initFixture("fixed");
 
@@ -678,6 +693,54 @@ describe("conventional-commits", () => {
         <a name="1.0.1"></a>
         ## <small>1.0.1 (YYYY-MM-DD)</small>
         * fix(pkg2): A commit using a legacy callback preset
+
+      `);
+    });
+
+    it("normalizes new v8+ preset API to legacy format", async () => {
+      const cwd = await initFixture("fixed");
+
+      const config = await getChangelogConfig("./scripts/new-api-preset.js", cwd);
+
+      // Should have the new API properties
+      expect(config.parser).toBeDefined();
+      expect(config.writer).toBeDefined();
+      expect(config.whatBump).toBeDefined();
+
+      // Should also have normalized legacy properties
+      expect(config.parserOpts).toBeDefined();
+      expect(config.writerOpts).toBeDefined();
+      expect(config.conventionalChangelog).toBeDefined();
+      expect(config.conventionalChangelog.parserOpts).toBeDefined();
+      expect(config.conventionalChangelog.writerOpts).toBeDefined();
+      expect(config.recommendedBumpOpts).toBeDefined();
+      expect(config.recommendedBumpOpts.whatBump).toEqual(expect.any(Function));
+      expect(config.recommendedBumpOpts.parserOpts).toBeDefined();
+    });
+
+    it("supports new v8+ preset API for changelog generation", async () => {
+      const cwd = await initFixture("fixed");
+
+      await gitTag(cwd, "v1.0.0");
+
+      const [pkg1] = await getPackages(cwd);
+
+      // make a change in package-1
+      await pkg1.set("changed", 1).serialize();
+      await gitAdd(cwd, pkg1.manifestLocation);
+      await gitCommit(cwd, "fix(pkg1): A commit using the new v8+ preset API");
+
+      // update version
+      await pkg1.set("version", "1.0.1").serialize();
+
+      const leafChangelog = await updateChangelog(pkg1, "fixed", {
+        changelogPreset: "./scripts/new-api-preset.js",
+      });
+
+      expect(leafChangelog.newEntry).toMatchInlineSnapshot(`
+        <a name="1.0.1"></a>
+        ## <small>1.0.1 (YYYY-MM-DD)</small>
+        * fix(pkg1): A commit using the new v8+ preset API
 
       `);
     });
