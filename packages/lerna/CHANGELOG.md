@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.6](https://github.com/lerna/lerna/compare/v9.0.5...v9.0.6) (2026-03-11)
+
+### Bug Fixes
+
+- **deps:** add missing ci-info dependency ([#4263](https://github.com/lerna/lerna/issues/4263)) ([b768187](https://github.com/lerna/lerna/commit/b76818783c92c582b11555c56c222947ecbd4791))
+- **deps:** bump tar from 7.5.8 to 7.5.11 ([#4296](https://github.com/lerna/lerna/issues/4296)) ([7a69a57](https://github.com/lerna/lerna/commit/7a69a5753324c70086c9ed760c61dd22d5c89b42))
+
 ## [9.0.5](https://github.com/lerna/lerna/compare/v9.0.4...v9.0.5) (2026-02-28)
 
 ### Bug Fixes
