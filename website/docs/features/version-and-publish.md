@@ -126,7 +126,13 @@ Lerna allows you to manage your project using one of two modes: Fixed or Indepen
 
 Fixed mode Lerna projects operate on a single version line. The version is kept in the `lerna.json` file at the root of your project under the `version` key. When you run `lerna publish`, if a package has been updated since the last time a release was made, it will be updated to the new version you're releasing. This means that you only publish a new version of a package when you need to.
 
-> Note: If you have a major version zero, all updates are [considered breaking](https://semver.org/#spec-item-4). Because of that, running `lerna publish` with a major version zero and choosing any non-prerelease version number will cause new versions to be published for all packages, even if not all packages have changed since the last release.
+> Note: When the current version is below `1.0.0`, certain updates are [considered breaking](https://semver.org/#spec-item-4) per semver conventions. Specifically:
+>
+> - A **major** bump is always breaking (e.g., `0.5.0` → `1.0.0`)
+> - A **minor** bump is breaking when the current version is below `1.0.0` (e.g., `0.6.0` → `0.7.0`)
+> - A **patch** bump is breaking when the current version is below `0.1.0` (e.g., `0.0.1` → `0.0.2`)
+>
+> A regular patch bump such as `0.6.38` → `0.6.39` is **not** considered breaking. When a bump is considered breaking, `lerna publish` in fixed mode will publish new versions for all packages, even if not all packages have changed since the last release.
 
 Use this if you want to automatically tie all package versions together. One issue with this approach is that a major change in any package will result in all packages having a new major version.
 
