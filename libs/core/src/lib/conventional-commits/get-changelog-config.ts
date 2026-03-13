@@ -1,5 +1,5 @@
 import npa from "npm-package-arg";
-import pify from "pify";
+import { promisify } from "node:util";
 import log from "../npmlog";
 import { ValidationError } from "../validation-error";
 import { ChangelogPresetConfig } from "./constants";
@@ -94,7 +94,7 @@ async function resolveConfigPromise(presetPackageName: string, presetConfig: obj
       config = config(presetConfig);
     } catch (_) {
       // legacy presets export an errback function instead of Q.all()
-      config = pify(config)();
+      config = promisify(config)();
     }
   }
 

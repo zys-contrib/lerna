@@ -3,13 +3,15 @@
  *
  * Embedded here into lerna directly because we cannot yet migrate to ESM only, and we needed to bump outdated deps.
  */
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import isStream from "is-stream";
 import path from "path";
-import tempDir from "temp-dir";
-import * as uuid from "uuid";
 
-const tempfile = (filePath: any) => path.join(tempDir, uuid.v4(), filePath || "");
+const tempDir = fs.realpathSync(os.tmpdir());
+
+const tempfile = (filePath: any) => path.join(tempDir, randomUUID(), filePath || "");
 
 const writeStream = async (filePath: any, fileContent: any) =>
   new Promise((resolve, reject) => {
