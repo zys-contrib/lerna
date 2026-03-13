@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.7](https://github.com/lerna/lerna/compare/v9.0.6...v9.0.7) (2026-03-13)
+
+### Bug Fixes
+
+- **core:** normalize ./ prefix in workspace globs for package detection ([#4308](https://github.com/lerna/lerna/issues/4308)) ([bd39779](https://github.com/lerna/lerna/commit/bd397791843623b2caead97c9ee136c250b58937))
+- **core:** remove multimatch dependency and legacy-core internals ([#4314](https://github.com/lerna/lerna/issues/4314)) ([ec01462](https://github.com/lerna/lerna/commit/ec01462a9c6b6911f47d328e6662aa7afd7feea5))
+- **version:** skip config resolution in prettier getFileInfo check ([#4306](https://github.com/lerna/lerna/issues/4306)) ([ae53efe](https://github.com/lerna/lerna/commit/ae53efefc47917fbcbc576db278dacb4ecc37512))
+- **version:** support ESM and new v8+ conventional-changelog preset API ([#4302](https://github.com/lerna/lerna/issues/4302)) ([575b248](https://github.com/lerna/lerna/commit/575b248e93c3f2efa8695d593769a4ee45d9c935))
+
 ## [9.0.6](https://github.com/lerna/lerna/compare/v9.0.5...v9.0.6) (2026-03-11)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.7](https://github.com/lerna/lerna/compare/v9.0.6...v9.0.7) (2026-03-13)
+
+### Bug Fixes
+
+- **core:** remove multimatch dependency and legacy-core internals ([#4314](https://github.com/lerna/lerna/issues/4314)) ([ec01462](https://github.com/lerna/lerna/commit/ec01462a9c6b6911f47d328e6662aa7afd7feea5))
+
 ## [9.0.6](https://github.com/lerna/lerna/compare/v9.0.5...v9.0.6) (2026-03-11)
 
 ### Bug Fixes
