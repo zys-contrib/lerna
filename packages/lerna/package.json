@@ -45,7 +45,6 @@
     "@octokit/plugin-enterprise-rest": "6.0.1",
     "@octokit/rest": "20.1.2",
     "aproba": "2.0.0",
-    "byte-size": "8.1.1",
     "ci-info": "4.3.1",
     "cmd-shim": "6.0.3",
     "color-support": "1.1.3",

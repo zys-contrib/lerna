@@ -10,9 +10,9 @@ expect.addSnapshotSerializer({
     return trimEnds(
       normalizeCommitSHAs(normalizeEnvironment(str))
         .replaceAll(/integrity:\s*.*/g, "integrity: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-        .replaceAll(/\d*\.\d*\s?kB package\.json/g, "XXXkb package.json")
+        .replaceAll(/\d+\.?\d*\s?kB package\.json/g, "XXXkb package.json")
         .replaceAll(/\d*B package\.json/g, "XXXB package.json")
-        .replaceAll(/\d*\.\d*\s?kB/g, "XXX.XXX kb")
+        .replaceAll(/\d+\.?\d*\s?kB/g, "XXX.XXX kb")
         .replaceAll(/size:\s*\d*\s?B/g, "size: XXXB")
         .replaceAll(/session\s\w{16}/g, "session XXXXXXXX")
         .replaceAll(/"vXX\.XX\.XX-0-g[a-f0-9]{7}"/g, '"vXX.XX.XX-0-gXXXXXXXX"')
@@ -167,7 +167,7 @@ describe("lerna-publish-custom-publish-directories", () => {
         lerna notice
         lerna notice 📦  package-1@XX.XX.XX
         lerna notice === Tarball Contents ===
-        lerna notice 99B   lib/main.js
+        lerna notice 99B lib/main.js
         lerna notice XXXkb package.json
         lerna notice === Tarball Details ===
         lerna notice name:          package-1

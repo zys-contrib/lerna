@@ -1,4 +1,4 @@
-import byteSize from "byte-size";
+import byteSize from "./byte-size";
 import columnify from "columnify";
 import log from "./npmlog";
 

@@ -10,7 +10,7 @@ expect.addSnapshotSerializer({
         .replaceAll(/integrity:\s*.*/g, "integrity: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         .replaceAll(/\d*B package\.json/g, "XXXB package.json")
         .replaceAll(/size:\s*\d*\s?B/g, "size: XXXB")
-        .replaceAll(/\d*\.\d*\s?kB/g, "XXX.XXX kb")
+        .replaceAll(/\d+\.?\d*\s?kB/g, "XXX.XXX kb")
     );
   },
   test(val: string) {
