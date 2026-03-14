@@ -8,7 +8,7 @@ jest.mock("../render-template", () => (width: string, template: any, values: { x
   } // pull in from parent object for stringify
   return "w:" + width + ", t:" + JSON.stringify(template) + ", v:" + JSON.stringify(values);
 });
-jest.mock("console-control-strings", () => ({
+jest.mock("../console-control-strings", () => ({
   eraseLine: () => "ERASE",
   gotoSOL: () => "CR",
   color: (to: string) => "COLOR:" + to,

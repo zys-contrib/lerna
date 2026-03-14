@@ -2,11 +2,7 @@ import byteSize from "./byte-size";
 import columnify from "columnify";
 import log from "./npmlog";
 
-// has-unicode does not have types.
-// TODO: it is a tiny module, inline it?
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import createHasUnicode from "has-unicode";
+import { hasUnicode as createHasUnicode } from "./npmlog/gauge/has-unicode";
 
 const hasUnicode = createHasUnicode();
 

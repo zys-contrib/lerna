@@ -6,7 +6,7 @@
  */
 
 "use strict";
-var consoleControl = require("console-control-strings");
+var consoleControl = require("./console-control-strings");
 var renderTemplate = require("./render-template");
 var validate = require("aproba");
 

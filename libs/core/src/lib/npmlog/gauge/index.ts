@@ -4,7 +4,7 @@
 
 import onExit from "signal-exit";
 
-const hasUnicode = require("has-unicode");
+const { hasUnicode } = require("./has-unicode");
 
 const Plumbing = require("./plumbing");
 const hasColor = require("./has-color");

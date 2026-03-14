@@ -6,7 +6,7 @@
  */
 
 "use strict";
-var color = require("console-control-strings").color;
+var color = require("./console-control-strings").color;
 var ThemeSet = require("./theme-set");
 
 var themes = (module.exports = new ThemeSet());
