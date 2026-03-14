@@ -1,10 +1,10 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 // nx-ignore-next-line
 import { loggingOutput, tempDirSerializer, windowsPathSerializer } from "@lerna/test-helpers";
-import chalk from "chalk";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { colorize } from "@lerna/child-process";
 import { formatJSON, listableFormatProjects } from "./listable-format-projects";
 import { ListableOptions } from "./listable-options";
 import { Package, RawManifest } from "./package";
@@ -14,9 +14,6 @@ import {
   ProjectGraphWorkspacePackageDependency,
 } from "./project-graph-with-packages";
 import { createProjectGraph, projectGraphDependency } from "./test-helpers/create-project-graph";
-
-// keep snapshots stable cross-platform
-chalk.level = 0;
 
 // remove quotes around top-level strings
 expect.addSnapshotSerializer({
@@ -41,6 +38,14 @@ describe("listableFormatProjects", () => {
 
   const formatWithOptions = (opts: ListableOptions) =>
     listableFormatProjects(projectNodes, projectGraph, { _: ["ls"], ...opts });
+
+  beforeAll(() => {
+    colorize.disable();
+  });
+
+  afterAll(() => {
+    colorize.enable();
+  });
 
   beforeAll(() => {
     const cwd = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "lerna-test-"));
